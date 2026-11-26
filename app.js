@@ -74,8 +74,8 @@ function renderStep1(){
  const modePanel=state.entryMode==="link"
   ? '<div class="entry-panel" role="tabpanel"><p class="mode-description">매물 주소를 입력해 열고, 매물 설명을 붙여 차량 정보를 가져올 수 있습니다.</p><div class="listing-row"><input id="listing-url" type="url" value="'+esc(state.listingUrl)+'" placeholder="보배드림 등 매물 URL 붙여넣기"><button class="secondary" data-action="import-listing">주소 확인</button></div><p class="hint">외부 사이트의 사진 자동 가져오기는 사이트 접근 정책과 연동 서버에 따라 제한될 수 있습니다.</p><button class="text-button" data-action="paste-listing">매물 설명 붙여넣기</button></div>'
   : '<div class="entry-panel" role="tabpanel"><p class="mode-description">매물 링크 없이 사진을 올리고, 다음 단계에서 차량 정보를 직접 입력합니다.</p></div>';
- const photoBlock='<div class="photo-upload"><div class="card-head"><div><h2 class="upload-title">사진 업로드</h2><p class="upload-description">여러 각도에서 촬영한 선명한 사진을 8~15장 올려주세요.</p><p class="upload-limit">최소 10장, 최대 30장 등록 가능</p></div><span class="status-badge">'+count+' / 30</span></div><div class="drop" id="drop-area" role="button" tabindex="0"><span class="upload-icon">＋</span><strong>사진을 여기에 끌어다 놓으세요</strong><small>클릭해서 선택 · JPG, PNG, WEBP · 장당 최대 20MB</small></div>'+(count?'<div class="photo-count"><span>드래그 또는 화살표로 장면 순서 변경</span><span>첫 번째 사진이 표지입니다</span></div><div class="thumb-grid">'+photoThumbs()+'</div>':'<div class="upload-note"><b>촬영 순서 추천</b><span>전면 3/4 · 측면 · 후면 · 실내 · 계기판 · 주요 옵션</span></div>')+'</div>';
- app.innerHTML=shell('<section class="page-grid"><div class="main-column"><div class="intro"><p class="kicker">중고차 매물 숏폼 제작</p><h1>사진과 매물 정보로<br>판매 영상을 만드세요.</h1><p class="lead">사진을 추가하고 차량 정보를 확인하면, 세로형 숏폼을 미리 보고 파일로 저장할 수 있습니다.</p></div><section class="card entry-card"><div class="card-head"><div><p class="eyebrow">매물 등록 방식</p><h2>어떤 방법으로 시작할까요?</h2></div></div><div class="entry-mode-grid" role="tablist" aria-label="매물 등록 방식">'+modeTabs+'</div>'+modePanel+photoBlock+'</section><div class="privacy-note"><span>◇</span><p><b>사진은 기본적으로 이 기기에서 처리됩니다.</b><br>업로드한 사진과 영상은 외부 서버로 전송하지 않습니다.</p></div><button class="primary wide" data-action="next" '+(count<10?"disabled":"")+'>다음 · 차량 정보 ›</button></div><aside class="side-card"><p class="eyebrow">제작 단계</p><div class="mini-step active"><b>01</b><span>매물과 사진</span><small>10~30장 등록</small></div><div class="mini-step"><b>02</b><span>차량 정보</span><small>사실 정보와 판매자</small></div><div class="mini-step"><b>03</b><span>영상 설정</span><small>스타일·오디오·저장</small></div><div class="side-tip"><span>팁</span><p>첫 사진은 차량 전체가 잘 보이는 전면 또는 측면 사진으로 선택하세요.</p></div><p class="side-foot">현재 브라우저에서 작업 중</p></aside></section>');
+ const photoBlock='<div class="photo-upload"><div class="card-head"><div><h2 class="upload-title">사진 업로드</h2><p class="upload-description">여러 각도에서 촬영한 선명한 사진을 8~15장 올려주세요.</p></div><span class="status-badge">'+count+' / 15</span></div><div class="drop" id="drop-area" role="button" tabindex="0"><span class="upload-icon">＋</span><strong>사진을 여기에 끌어다 놓으세요</strong><small>클릭해서 선택 · JPG, PNG, WEBP · 장당 최대 20MB</small></div>'+(count?'<div class="photo-count"><span>드래그 또는 화살표로 장면 순서 변경</span><span>첫 번째 사진이 표지입니다</span></div><div class="thumb-grid">'+photoThumbs()+'</div>':'<div class="upload-note"><b>촬영 순서 추천</b><span>전면 3/4 · 측면 · 후면 · 실내 · 계기판 · 주요 옵션</span></div>')+'</div>';
+ app.innerHTML=shell('<section class="page-grid"><div class="main-column"><div class="intro"><p class="kicker">중고차 매물 숏폼 제작</p><h1>사진과 매물 정보로<br>판매 영상을 만드세요.</h1><p class="lead">사진을 추가하고 차량 정보를 확인하면, 세로형 숏폼을 미리 보고 파일로 저장할 수 있습니다.</p></div><section class="card entry-card"><div class="card-head"><div><p class="eyebrow">매물 등록 방식</p><h2>어떤 방법으로 시작할까요?</h2></div></div><div class="entry-mode-grid" role="tablist" aria-label="매물 등록 방식">'+modeTabs+'</div>'+modePanel+photoBlock+'</section><div class="privacy-note"><span>◇</span><p><b>사진은 기본적으로 이 기기에서 처리됩니다.</b><br>업로드한 사진과 영상은 외부 서버로 전송하지 않습니다.</p></div><button class="primary wide" data-action="next" '+(count<8?"disabled":"")+'>다음 · 차량 정보 ›</button></div><aside class="side-card"><p class="eyebrow">제작 단계</p><div class="mini-step active"><b>01</b><span>매물과 사진</span><small>8~15장 등록</small></div><div class="mini-step"><b>02</b><span>차량 정보</span><small>사실 정보와 판매자</small></div><div class="mini-step"><b>03</b><span>영상 설정</span><small>스타일·오디오·저장</small></div><div class="side-tip"><span>팁</span><p>첫 사진은 차량 전체가 잘 보이는 전면 또는 측면 사진으로 선택하세요.</p></div><p class="side-foot">현재 브라우저에서 작업 중</p></aside></section>');
 }
 function field(label,key,placeholder,required,opts,type){
  const v=state.vehicle[key]||"";
@@ -122,7 +122,7 @@ function render(){
  document.documentElement.style.setProperty("--orange",state.vehicle.brandColor||"#ef6d32");
  if(state.step===1)renderStep1(); else if(state.step===2)renderStep2(); else if(state.step===3)renderStep3(); else renderResult();
 }
-function recommendedDuration(n){return n<=12?15:n<=20?25:40}
+function recommendedDuration(n){return n<=12?15:25}
 function toast(message){
  let box=$("#toasts"); if(!box)return;
  const node=document.createElement("div");node.className="toast";node.textContent=message;box.append(node);
@@ -131,12 +131,12 @@ function toast(message){
 function addFiles(files){
  const allowed=[...files].filter(f=>/^image\/(jpeg|png|webp)$/.test(f.type));
  if(allowed.length<files.length)toast("JPG, PNG, WEBP 파일만 추가할 수 있습니다.");
- const room=30-state.photos.length;
+ const room=Math.max(0,15-state.photos.length);
  allowed.slice(0,room).forEach(file=>{
   if(file.size>20*1024*1024){toast(file.name+" 파일이 20MB를 초과합니다.");return}
   state.photos.push({file:file,url:URL.createObjectURL(file),name:file.name});
  });
- if(allowed.length>room)toast("사진은 최대 30장까지 올릴 수 있습니다.");
+ if(allowed.length>room)toast("사진은 최대 15장까지 올릴 수 있습니다.");
  if(state.duration===15 && state.photos.length>12)state.duration=recommendedDuration(state.photos.length);
  saveDraft();render();
 }
@@ -280,7 +280,7 @@ async function getVoiceBuffer(audioContext){
  return null;
 }
 async function makeVideo(){
- if(state.photos.length<10){toast("사진을 10장 이상 추가하세요.");return}
+ if(state.photos.length<8){toast("사진을 8장 이상 추가하세요.");return}
  const v=state.vehicle;
  if(!v.make||!v.model||!v.year||!v.price){toast("제조사, 모델, 연식, 판매 가격을 입력하세요.");state.step=2;render();return}
  if(state.voice&&!state.narrationFile&&!ttsReady){toast("나레이션 파일을 올리거나 음성 API를 연결해 주세요.");return}
@@ -350,9 +350,9 @@ async function previewVoice(){
 }
 function act(action,el){
  const index=Number(el.dataset.index),value=el.dataset.value;
- if(action==="step"){const target=Number(el.dataset.step);if(target<state.step||target===state.step+1){if(target===2&&state.photos.length<10){toast("사진을 10장 이상 등록하세요.");return}if(target===3&&!validVehicle()){toast("제조사·모델·연식·판매 가격을 먼저 입력하세요.");state.step=2;render();return}state.step=target;render()}return}
+ if(action==="step"){const target=Number(el.dataset.step);if(target<state.step||target===state.step+1){if(target===2&&state.photos.length<8){toast("사진을 8장 이상 등록하세요.");return}if(target===3&&!validVehicle()){toast("제조사·모델·연식·판매 가격을 먼저 입력하세요.");state.step=2;render();return}state.step=target;render()}return}
  if(action==="next"){
-  if(state.step===1){if(state.photos.length<10){toast("계속하려면 사진을 10장 이상 등록하세요.");return}state.step=2}
+  if(state.step===1){if(state.photos.length<8){toast("계속하려면 사진을 8장 이상 등록하세요.");return}state.step=2}
   else if(state.step===2){if(!validVehicle()){toast("제조사, 모델, 연식, 판매 가격을 입력해 주세요.");return}state.step=3}
   saveDraft();render();window.scrollTo({top:0,behavior:"smooth"});return
  }
