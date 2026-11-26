@@ -80,3 +80,21 @@
 .footer{margin-top:50px}
 @media(max-width:900px){.page-grid{grid-template-columns:minmax(0,1fr) 260px;gap:14px}.side-card{padding:17px}}
 @media(max-width:680px){.topbar{padding:0 14px}.section-top{gap:10px}.section-top h1,.result-page h1{font-size:21px}.live-preview{align-items:flex-start}.preview-phone{width:115px}.button-row .primary,.button-row .secondary,.result-actions>*{flex:1;min-width:120px}.result-page{margin:24px auto 50px}.wizard{gap:0;justify-content:space-between;margin:14px -7px 0}.wizard-step{gap:5px;padding:6px 5px;font-size:10px}.wizard-step span{width:23px;height:23px}.page-grid{display:flex;flex-direction:column;margin:20px auto 45px}.main-column,.side-card{width:100%}.side-card{position:static;order:-1}.intro h1{font-size:24px}.history-field{display:block}.history-field>.choice-row{justify-content:flex-start;margin-top:8px}.brand-row{align-items:stretch;flex-direction:column}.listing-row{align-items:stretch}.listing-row .secondary{white-space:nowrap}.card-head{align-items:flex-start}.entry-mode-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.entry-mode{gap:6px;padding:11px 7px}.entry-mode b{font-size:12px}.entry-panel{padding-top:13px}}
+
+/* Compact listing mode and vehicle photo picker, following the reference's tighter controls. */
+.entry-card{padding:17px}
+.entry-card .card-head{margin-bottom:10px}
+.entry-mode-grid{gap:2px;padding:3px}
+.entry-mode{gap:0;min-height:40px;padding:8px 10px;border-radius:10px}
+.entry-mode .entry-icon{display:none}
+.entry-mode b{font-size:12px}
+.entry-panel{padding:12px 2px 9px}
+.mode-description{margin-bottom:9px;font-size:12px}
+.entry-panel .hint{margin-top:7px}
+.photo-upload{padding-top:12px}
+.photo-upload .card-head{margin-bottom:10px}
+.photo-upload .drop{height:auto;min-height:82px;padding:11px 14px;flex-direction:row;justify-content:flex-start;gap:12px;border-width:1.5px;border-radius:14px;text-align:left}
+.photo-upload .upload-icon{width:42px;height:42px;flex:0 0 42px;border-radius:13px;font-size:20px}
+.photo-upload .drop strong{font-size:13px}
+.photo-upload .drop small{font-size:11px}
+@media(max-width:680px){.entry-card{padding:14px}.entry-mode{min-height:38px;padding:7px 5px}.entry-mode b{font-size:11px}.photo-upload .drop{min-height:76px;padding:9px 11px}.photo-upload .upload-icon{width:38px;height:38px;flex-basis:38px}.photo-upload .drop strong{font-size:12px}}
