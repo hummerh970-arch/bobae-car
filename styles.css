@@ -286,3 +286,15 @@
 .photo-review-empty span:first-child{display:grid;place-items:center;width:30px;height:30px;border-radius:9px;background:#fff0e6;color:var(--orange);font-size:18px}
 .vehicle-history-card{width:100%;max-width:760px;margin-right:auto}
 @media(max-width:680px){.photo-review-head{align-items:flex-start;gap:8px}.photo-review-actions{gap:6px}.photo-review-actions .secondary{padding:7px 9px}.photo-thumb{flex-basis:68px;width:68px;height:68px}.vehicle-history-card{max-width:100%}}
+
+/* Compact dealer logo and step navigation */
+.logo-control{justify-content:flex-start;gap:8px;min-height:32px;margin-top:10px;padding:0;border:0;border-radius:0;background:transparent}
+.logo-state{gap:6px;font-size:12px}
+.logo-state::before{width:20px;height:20px;font-size:11px}
+.logo-state small{max-width:180px;font-size:11px}
+.logo-control .secondary{min-width:0;min-height:32px;padding:6px 10px;border-radius:9px;font-size:12px}
+.listing-step-actions{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:18px 0 26px}
+.listing-step-actions .secondary,.listing-step-actions .primary{min-height:42px;padding:10px 16px;border-radius:11px;font-size:13px}
+.listing-step-actions .secondary{min-width:96px}
+.listing-step-actions .primary{min-width:150px}
+@media(max-width:680px){.logo-control{gap:8px;padding:0;border:0;background:transparent}.logo-state small{max-width:120px}.listing-step-actions{gap:10px}.listing-step-actions .secondary,.listing-step-actions .primary{flex:1;min-width:0}}
