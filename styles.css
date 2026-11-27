@@ -309,4 +309,5 @@
 .vehicle-summary-line span{flex:0 0 auto;color:#858993}
 .vehicle-summary-line b{max-width:64%;color:#383b44;font-weight:700;text-align:right;overflow-wrap:anywhere}
 .vehicle-summary-empty{margin:10px 0 0;color:#92959d;font-size:12px;line-height:1.5}
-@media(max-width:680px){.vehicle-summary-card{position:static}.vehicle-summary-card .vehicle-summary-line{padding:7px 1px}}
+@media(max-width:680px){.vehicle-summary-card{position:static}.vehicle-summary-card .vehicle-summary-line{padding:7px 1px}}.vehicle-summary-photo{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:0 0 10px;padding:7px 10px;border-radius:9px;background:#f5f6f8;color:#777b84;font-size:12px;font-weight:700}
+.vehicle-summary-photo b{color:#444751;font-size:12px}
