@@ -320,7 +320,6 @@
 .vehicle-summary-price span{flex:0 0 auto;color:#858993;font-size:12px;font-weight:700}
 .vehicle-summary-price strong{flex:1;min-width:0;margin:0;color:#c96524;font-size:18px;font-weight:800;text-align:right;line-height:1.3;overflow-wrap:anywhere}
 .vehicle-summary-details{margin-top:12px}
-.vehicle-summary-section-title{margin:0 0 2px;color:#777b84;font-size:11px;font-weight:800;letter-spacing:.02em}
 .vehicle-summary-line{align-items:center;gap:14px;padding:7px 1px}
 .vehicle-summary-line span{flex:0 0 88px;white-space:normal}
 .vehicle-summary-line b{flex:1;min-width:0;max-width:none}
@@ -333,7 +332,6 @@
 .vehicle-summary-price{border-color:#ffffff29}
 .vehicle-summary-price span{color:#b8bdcd}
 .vehicle-summary-price strong{color:#ffad70}
-.vehicle-summary-section-title{color:#d1d5e0}
 .vehicle-summary-line{border-bottom-color:#ffffff29}
 .vehicle-summary-line span{color:#adb3c4}
 .vehicle-summary-line b{color:#fff}
