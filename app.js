@@ -121,7 +121,6 @@ function vehicleSummaryMarkup(){
  const row=(label,value)=>value?'<div class="vehicle-summary-line"><span>'+esc(label)+'</span><b>'+esc(value)+'</b></div>':'';
  const rows=[
   row('연식',v.year),
-  row('트림',v.trim),
   row('주행거리',summaryMeasure(v.mileage,' km')),
   row('차체 · 색상',[v.body,v.color].filter(Boolean).join(' · ')),
   row('연료 · 변속기',[v.fuel,v.transmission].filter(Boolean).join(' · ')),
