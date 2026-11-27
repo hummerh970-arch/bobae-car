@@ -20,6 +20,14 @@ const state = Object.assign({}, defaults, saved, { photos:[], narrationFile:null
 state.vehicle = Object.assign({}, defaults.vehicle, saved.vehicle || {});
 if(state.vehicle.listingType==="트럭"||state.vehicle.listingType==="특장")state.vehicle.listingType="트럭·특장";
 state.history = Object.assign({}, defaults.history, saved.history || {});
+if(!saved.priceUnitVersion){
+ ["price","newPrice"].forEach(key=>{
+  const amount=Number(String(state.vehicle[key]||"").replace(/[^0-9]/g,""));
+  if(Number.isFinite(amount)&&amount>=100000)state.vehicle[key]=String(Math.round(amount/10000));
+ });
+ state.priceUnitVersion=1;
+ saveDraft();
+}
 if(!saved.history?.floodTotalLoss){const flood=saved.history?.flood,totalLoss=saved.history?.totalLoss;state.history.floodTotalLoss=flood==="있음"||totalLoss==="있음"?"있음":flood==="없음"&&totalLoss==="없음"?"없음":"미확인"}
 state.step = Math.min(Number(state.step)||1, 3);
 const templates = [
@@ -48,7 +56,7 @@ function saveDraft(){
 function priceText(){
  const v=state.vehicle;
  if(!v.price)return "가격 문의";
- try{return new Intl.NumberFormat("ko-KR").format(Number(String(v.price).replace(/[^0-9]/g,"")))+" "+(v.currency==="KRW"?"원":v.currency)}catch{return v.price}
+ try{return new Intl.NumberFormat("ko-KR").format(Number(String(v.price).replace(/[^0-9]/g,"")))+(v.currency==="KRW"?"만원":" "+v.currency)}catch{return v.price}
 }
 function carTitle(){
  const v=state.vehicle;
@@ -104,7 +112,7 @@ function field(label,key,placeholder,required,opts,type){
  const grouped=["newPrice","price","mileage","engine"].includes(key);
  const inputValue=grouped?formatGroupedValue(v):v;
  const mark=required?'<em class="required-mark" aria-hidden="true">*</em>':'';
- const suffix=key==="price"?'<span class="field-suffix" aria-hidden="true">원</span>':'';
+ const suffix=key==="price"||key==="newPrice"?'<span class="field-suffix" aria-hidden="true">만원</span>':'';
  const inputMode=grouped?'numeric':'';
  if(opts)return '<label class="field">'+label+'<span class="field-control has-select"><select data-field="'+key+'" '+(required?'required aria-required="true"':'')+'>'+opts.map(o=>'<option value="'+esc(o[0])+'" '+(String(v)===String(o[0])?"selected":"")+'>'+esc(o[1])+'</option>').join("")+'</select><span class="select-caret" aria-hidden="true">⌄</span>'+mark+'</span></label>';
  return '<label class="field">'+label+'<span class="field-control '+(suffix?'has-suffix ':'')+(required?'has-required':'')+'"><input data-field="'+key+'" type="'+(grouped?'text':(type||"text"))+'" '+(inputMode?'inputmode="'+inputMode+'"':'')+' value="'+esc(inputValue)+'" placeholder="'+esc(placeholder||"")+'" '+(required?'required aria-required="true"':'')+'>'+suffix+mark+'</span></label>';
@@ -150,10 +158,10 @@ function vehicleSummaryMarkup(){
   row('차체 · 색상',[v.body,v.color].filter(Boolean).join(' · ')),
   row('연료 · 변속기',[v.fuel,v.transmission].filter(Boolean).join(' · ')),
   row('구동 방식',v.drive),
-  row('배기량 · 최대 출력',v.engine&&v.power?summaryMeasure(v.engine,' cc')+' ('+summaryMeasure(v.power,'마력')+')':[summaryMeasure(v.engine,' cc'),summaryMeasure(v.power,'마력')].filter(Boolean).join(' ')),
+  row('배기량 · 최대 출력',v.engine&&v.power?summaryMeasure(v.engine,'cc')+' ('+summaryMeasure(v.power,'마력')+')':[summaryMeasure(v.engine,'cc'),summaryMeasure(v.power,'마력')].filter(Boolean).join(' ')),
   row('최대 토크',summaryMeasure(v.torque,' kg·m')),
   row('판매 방식',v.saleMethod),
-  row('신차 가격',v.newPrice?new Intl.NumberFormat('ko-KR').format(Number(String(v.newPrice).replace(/[^0-9]/g,'')))+'원':'')
+  row('신차 가격',v.newPrice?new Intl.NumberFormat('ko-KR').format(Number(String(v.newPrice).replace(/[^0-9]/g,'')))+'만원':'')
  ].filter(Boolean).join('');
  const empty=rows?'':'<p class="vehicle-summary-empty">차량 정보를 입력하면 요약에 표시됩니다.</p>';
  return '<aside class="side-card vehicle-summary-card"><div class="vehicle-summary-head"><p class="eyebrow">매물 요약</p><span class="vehicle-summary-photo">사진 '+state.photos.length+'장</span></div><h3>'+esc(carTitle()||'차량 정보를 입력하세요')+'</h3><div class="vehicle-summary-price"><span>판매가격</span><strong>'+esc(priceText())+'</strong></div><div class="vehicle-summary-details"><div class="vehicle-summary-list">'+rows+'</div></div>'+empty+'</aside>';
@@ -163,7 +171,7 @@ function refreshVehicleSummary(){const aside=$('.vehicle-summary-card');if(aside
 function renderStep2(){
  const v=state.vehicle;
  const history='<section class="card vehicle-history-card"><p class="eyebrow">차량 상태·이력</p><p class="hint">확인된 정보만 선택하고, 모르는 항목은 미확인으로 두세요.</p><div class="history-grid">'+historyField("사고 이력","accident",["미확인","없음","있음"])+historyField("침수·전손 이력","floodTotalLoss",["미확인","없음","있음"])+historyField("내차 피해 이력","damage",["미확인","없음","있음"])+historyField("수리 이력","repair",["미확인","없음","있음"])+historyField("특수 용도 이력","usage",["미확인","없음","렌트","영업용","택시","관용"])+historyField("소유자 변경","ownerChanges",["미확인","없음","1회","2회","3회 이상"])+historyField("보증 상태","warranty",["미확인","유효","만료"])+'</div></section>';
- app.innerHTML=shell(`<section class="page-grid"><div class="main-column"><div class="section-top"><div><h1>차량 정보 확인</h1><p class="lead">사진을 확인한 뒤 차량 정보를 직접 입력하세요. 입력한 정보가 영상에 반영됩니다.</p></div></div>${photoStrip()}<section class="card"><p class="eyebrow">기본 정보</p><div class="form-grid vehicle-form-grid">${field("제조사","make","예: BMW",true)}${field("모델","model","예: X4",true)}${field("트림","trim","예: 20i M Sport")}${field("연식","year","예: 2022",true,null,"number")}${field("주행거리","mileage","예: 42,000 km")}${field("색상","color","예: 미네랄 화이트")}</div></section><section class="card"><p class="eyebrow">판매 정보</p><div class="form-grid vehicle-form-grid">${field("신차가격","newPrice","예: 45,000,000",false,null,"number")}${field("판매가격","price","예: 38,900,000",true,null,"number")}${field("판매 방식","saleMethod","",false,options(["현금","할부","리스","렌트","협의"]))}</div></section><section class="card"><p class="eyebrow">차량 제원·사양</p><div class="form-grid vehicle-form-grid">${field("차체 유형","body","",false,options(["세단","SUV","해치백","쿠페","왜건","픽업","기타"]))}${field("연료","fuel","",false,options(["가솔린","디젤","하이브리드","전기","LPG","기타"]))}${field("변속기","transmission","",false,options(["자동","수동","CVT","DCT"]))}${field("구동 방식","drive","",false,options(["전륜","후륜","AWD","4WD"]))}${field("배기량","engine","예: 2,497 cc")}${powerTorqueField()}</div></section>${history}<section class="card"><p class="eyebrow">매물 설명 · 주요 장점</p><div class="field highlight-field"><div class="highlight-head"><span>주요 장점</span><small>${v.highlights.length}/5 선택</small></div><div class="choice-row highlight-choices">${highlightButtons()}</div><div class="listing-row"><input id="new-highlight" type="text" placeholder="직접 추가"><button class="secondary" data-action="add-highlight">추가</button></div></div><label class="field">매물 설명<textarea data-field="description" rows="3" placeholder="차량의 특징과 확인된 상태를 입력하세요.">${esc(v.description)}</textarea></label></section><section class="card"><p class="eyebrow">딜러 카드·브랜드</p><div class="form-grid dealer-form-grid">${field("상호명","businessName","예: 보배모터")}${field("판매자명","dealer","예: 홍길동")}${field("전화번호","phone","010-0000-0000",false,null,"tel")}${field("주소","address","매장 위치")}</div><div class="logo-control"><div class="logo-state ${state.logoImage?"has-logo":""}" aria-live="polite"><span>${state.logoImage?"✓ 로고 있음":"로고 없음"}</span>${state.logoImage&&state.logoName?"<small>"+esc(state.logoName)+"</small>":""}</div><input id="logo-file" type="file" accept="image/png,image/jpeg,image/webp" hidden><button type="button" class="secondary" data-action="logo-add">${state.logoImage?"로고 변경":"+ 로고 추가"}</button></div><p class="hint">추가한 로고는 영상에 표시됩니다. PNG, JPG, WEBP 파일을 사용할 수 있습니다.</p></section><div class="button-row listing-step-actions"><button class="secondary" data-action="back">이전</button><button class="primary" data-action="next">영상 설정</button></div></div>${vehicleSummaryMarkup()}</section>`);
+ app.innerHTML=shell(`<section class="page-grid"><div class="main-column"><div class="section-top"><div><h1>차량 정보 확인</h1><p class="lead">사진을 확인한 뒤 차량 정보를 직접 입력하세요. 입력한 정보가 영상에 반영됩니다.</p></div></div>${photoStrip()}<section class="card"><p class="eyebrow">기본 정보</p><div class="form-grid vehicle-form-grid">${field("제조사","make","예: BMW",true)}${field("모델","model","예: X4",true)}${field("트림","trim","예: 20i M Sport")}${field("연식","year","예: 2022",true,null,"number")}${field("주행거리","mileage","예: 42,000 km")}${field("색상","color","예: 미네랄 화이트")}</div></section><section class="card"><p class="eyebrow">판매 정보</p><div class="form-grid vehicle-form-grid">${field("신차가격","newPrice","예: 4,500",false,null,"number")}${field("판매가격","price","예: 3,890",true,null,"number")}${field("판매 방식","saleMethod","",false,options(["현금","할부","리스","렌트","협의"]))}</div></section><section class="card"><p class="eyebrow">차량 제원·사양</p><div class="form-grid vehicle-form-grid">${field("차체 유형","body","",false,options(["세단","SUV","해치백","쿠페","왜건","픽업","기타"]))}${field("연료","fuel","",false,options(["가솔린","디젤","하이브리드","전기","LPG","기타"]))}${field("변속기","transmission","",false,options(["자동","수동","CVT","DCT"]))}${field("구동 방식","drive","",false,options(["전륜","후륜","AWD","4WD"]))}${field("배기량","engine","예: 2,497 cc")}${powerTorqueField()}</div></section>${history}<section class="card"><p class="eyebrow">매물 설명 · 주요 장점</p><div class="field highlight-field"><div class="highlight-head"><span>주요 장점</span><small>${v.highlights.length}/5 선택</small></div><div class="choice-row highlight-choices">${highlightButtons()}</div><div class="listing-row"><input id="new-highlight" type="text" placeholder="직접 추가"><button class="secondary" data-action="add-highlight">추가</button></div></div><label class="field">매물 설명<textarea data-field="description" rows="3" placeholder="차량의 특징과 확인된 상태를 입력하세요.">${esc(v.description)}</textarea></label></section><section class="card"><p class="eyebrow">딜러 카드·브랜드</p><div class="form-grid dealer-form-grid">${field("상호명","businessName","예: 보배모터")}${field("판매자명","dealer","예: 홍길동")}${field("전화번호","phone","010-0000-0000",false,null,"tel")}${field("주소","address","매장 위치")}</div><div class="logo-control"><div class="logo-state ${state.logoImage?"has-logo":""}" aria-live="polite"><span>${state.logoImage?"✓ 로고 있음":"로고 없음"}</span>${state.logoImage&&state.logoName?"<small>"+esc(state.logoName)+"</small>":""}</div><input id="logo-file" type="file" accept="image/png,image/jpeg,image/webp" hidden><button type="button" class="secondary" data-action="logo-add">${state.logoImage?"로고 변경":"+ 로고 추가"}</button></div><p class="hint">추가한 로고는 영상에 표시됩니다. PNG, JPG, WEBP 파일을 사용할 수 있습니다.</p></section><div class="button-row listing-step-actions"><button class="secondary" data-action="back">이전</button><button class="primary" data-action="next">영상 설정</button></div></div>${vehicleSummaryMarkup()}</section>`);
 }
 function renderStep3(){
  const v=state.vehicle;
@@ -236,7 +244,7 @@ function parseListingText(text){
  return result;
 }
 function openImportModal(){
- const text='<p class="hint">외부 매물 페이지는 브라우저 보안 정책 때문에 자동으로 읽지 못할 수 있습니다. 링크에서 확인한 정보를 아래 형식으로 붙여넣으면 표시된 항목을 채웁니다.</p><textarea id="listing-text" rows="9" placeholder="제조사: BMW\n모델: X4\n세부 트림: 20i M Sport\n연식: 2022\n판매 가격: 38900000\n주행거리: 42000 km\n색상: 블랙\n상호명: 보배모터\n판매자명: 홍길동"></textarea><p class="hint">형식이 분명한 항목만 자동 입력하며, 나머지는 직접 확인해 주세요.</p><button class="primary wide" data-action="parse-listing">붙여넣은 정보 적용</button>';
+ const text='<p class="hint">외부 매물 페이지는 브라우저 보안 정책 때문에 자동으로 읽지 못할 수 있습니다. 링크에서 확인한 정보를 아래 형식으로 붙여넣으면 표시된 항목을 채웁니다.</p><textarea id="listing-text" rows="9" placeholder="제조사: BMW\n모델: X4\n세부 트림: 20i M Sport\n연식: 2022\n판매 가격: 3,890만원\n주행거리: 42000 km\n색상: 블랙\n상호명: 보배모터\n판매자명: 홍길동"></textarea><p class="hint">형식이 분명한 항목만 자동 입력하며, 나머지는 직접 확인해 주세요.</p><button class="primary wide" data-action="parse-listing">붙여넣은 정보 적용</button>';
  showModal("매물 정보 붙여넣기",text);
 }
 function showModal(title,body){
@@ -394,7 +402,7 @@ function showModal(title,body){
  document.body.insertAdjacentHTML("beforeend",'<div class="modal-backdrop"><section class="modal" role="dialog" aria-modal="true"><div class="modal-head"><h2>'+esc(title)+'</h2><button class="close" data-action="close-modal" aria-label="닫기">×</button></div>'+body+'</section></div>');
 }
 function pasteModal(){
- showModal("매물 정보 붙여넣기",'<p class="hint">아래처럼 항목 이름과 값을 붙여넣으면 라벨이 확인되는 정보만 채웁니다.</p><textarea id="listing-text" rows="9" placeholder="제조사: BMW\n모델: X4\n세부 트림: 20i M Sport\n연식: 2022\n판매 가격: 38900000\n주행거리: 42000 km\n색상: 블랙\n상호명: 보배모터\n판매자명: 홍길동"></textarea><p class="hint">가져온 값은 제출 전에 직접 확인해 주세요.</p><button class="primary wide" data-action="parse-listing">붙여넣은 정보 적용</button>');
+ showModal("매물 정보 붙여넣기",'<p class="hint">아래처럼 항목 이름과 값을 붙여넣으면 라벨이 확인되는 정보만 채웁니다.</p><textarea id="listing-text" rows="9" placeholder="제조사: BMW\n모델: X4\n세부 트림: 20i M Sport\n연식: 2022\n판매 가격: 3,890만원\n주행거리: 42000 km\n색상: 블랙\n상호명: 보배모터\n판매자명: 홍길동"></textarea><p class="hint">가져온 값은 제출 전에 직접 확인해 주세요.</p><button class="primary wide" data-action="parse-listing">붙여넣은 정보 적용</button>');
 }
 function parseListing(){
  const text=$("#listing-text")?.value||"",out={};
