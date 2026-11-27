@@ -12,6 +12,10 @@
 
 /* BOBAE CAR editor components */
 .wizard{display:flex;justify-content:center;gap:10px;margin:22px auto 6px;max-width:820px}
+.wizard-row{position:relative;display:flex;align-items:center;justify-content:center;max-width:1100px;min-height:43px;margin:22px auto 6px}
+.wizard-row .wizard{width:100%;margin:0 auto}
+.wizard-back{position:absolute;left:0;top:50%;transform:translateY(-50%);display:inline-flex;align-items:center;justify-content:center;min-height:38px;padding:8px 12px;border:1px solid #e2e3e8;border-radius:10px;background:#fff;color:#555963;font-size:12px;font-weight:700;box-shadow:0 1px 2px #202a3a08;transition:border-color .15s,background .15s}
+.wizard-back:hover{border-color:#efc8ad;background:#fff8f2;color:#b95c29}
 .wizard-step{display:flex;align-items:center;gap:9px;border:0;background:transparent;color:#9b9da5;padding:8px 13px;font-size:12px}
 .wizard-step span{width:27px;height:27px;border-radius:50%;display:grid;place-items:center;background:#e6e7eb;font-weight:800}
 .wizard-step.active{color:#262934}.wizard-step.active span,.wizard-step.done span{background:var(--orange);color:#fff}
@@ -82,6 +86,7 @@
 .footer{margin-top:50px}
 @media(max-width:900px){.page-grid{grid-template-columns:minmax(0,1fr) 260px;gap:14px}.side-card{padding:17px}}
 @media(max-width:680px){.topbar{padding:0 14px}.section-top{gap:10px}.section-top .back-button{min-height:36px;padding:7px 10px;font-size:11px}.section-top h1,.result-page h1{font-size:21px}.live-preview{align-items:flex-start}.preview-phone{width:115px}.button-row .primary,.button-row .secondary,.result-actions>*{flex:1;min-width:120px}.result-page{margin:24px auto 50px}.wizard{gap:0;justify-content:space-between;margin:14px -7px 0}.wizard-step{gap:5px;padding:6px 5px;font-size:10px}.wizard-step span{width:23px;height:23px}.page-grid{display:flex;flex-direction:column;margin:20px auto 45px}.main-column,.side-card{width:100%}.side-card{position:static;order:-1}.intro h1{font-size:24px}.history-field{display:block}.history-field>.choice-row{justify-content:flex-start;margin-top:8px}.brand-row{align-items:stretch;flex-direction:column}.listing-row{align-items:stretch}.listing-row .secondary{white-space:nowrap}.card-head{align-items:flex-start}.entry-mode-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.entry-mode{gap:6px;padding:11px 7px}.entry-mode b{font-size:12px}.entry-panel{padding-top:13px}}
+@media(max-width:680px){.wizard-row{display:grid;grid-template-columns:auto minmax(0,1fr);gap:4px;min-height:43px;margin:14px auto 0}.wizard-row .wizard{min-width:0;gap:0;justify-content:space-between;margin:0}.wizard-back{position:static;transform:none;min-height:34px;padding:6px 8px;font-size:11px}.wizard-row .wizard-step{gap:3px;padding:6px 2px;font-size:9px}.wizard-row .wizard-step span{width:22px;height:22px}}
 
 /* Compact listing mode and vehicle photo picker, following the reference's tighter controls. */
 .entry-card{padding:17px}
