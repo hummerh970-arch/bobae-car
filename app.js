@@ -18,6 +18,7 @@ const defaults = {
 };
 const state = Object.assign({}, defaults, saved, { photos:[], narrationFile:null, logoImage:null, resultUrl:"", busy:false });
 state.vehicle = Object.assign({}, defaults.vehicle, saved.vehicle || {});
+if(state.vehicle.listingType==="트럭"||state.vehicle.listingType==="특장")state.vehicle.listingType="트럭·특장";
 state.history = Object.assign({}, defaults.history, saved.history || {});
 state.step = Math.min(Number(state.step)||1, 3);
 const templates = [
@@ -65,15 +66,15 @@ function shell(content){
 function photoThumbs(){
  return state.photos.map((p,i)=>'<article class="thumb '+(i===0?"cover":"")+'" draggable="true" data-drag="'+i+'"><img src="'+p.url+'" alt="차량 사진 '+(i+1)+'"><span class="num">'+(i===0?"표지":(i+1))+'</span><button class="remove" data-action="remove" data-index="'+i+'" aria-label="사진 '+(i+1)+' 삭제">×</button><div class="sort"><button data-action="move-left" data-index="'+i+'" aria-label="왼쪽으로 이동">←</button><button data-action="move-right" data-index="'+i+'" aria-label="오른쪽으로 이동">→</button></div></article>').join("");
 }
-function vehicleTypeIcon(type,index){
- if(type==="특장")return '<svg class="vehicle-type-svg" viewBox="0 0 48 32" focusable="false"><path d="M3 17h19V9h9l7 7h6v10H3z"/><path d="M21 9V4l7-2 5 3-5 2M27 7l6 6m-1-1 5-3m-5 3v5"/><circle cx="12" cy="27" r="3"/><circle cx="37" cy="27" r="3"/></svg>';
+function vehicleTypeIcon(type){
+ if(type==="트럭·특장")return '<svg class="vehicle-type-svg" viewBox="0 0 48 32" focusable="false"><path d="M3 17h19V9h9l7 7h6v10H3z"/><path d="M21 9V4l7-2 5 3-5 2M27 7l6 6m-1-1 5-3m-5 3v5"/><circle cx="12" cy="27" r="3"/><circle cx="37" cy="27" r="3"/></svg>';
  if(type==="트레일러")return '<svg class="vehicle-type-svg" viewBox="0 0 48 32" focusable="false"><path d="M5 7h31v16H5zM36 19h5l4 3"/><circle cx="14" cy="26" r="3"/><circle cx="31" cy="26" r="3"/><path d="M9 11h23v8H9z"/></svg>';
- return ["🚗","🚚","🛠️","🚌","🏍️","🚐","🚎","🚜","📦","🚛"][index];
+ return {"중고차":"🚗","트럭·특장":"🚚","버스":"🚌","오토바이":"🏍️","캠핑카":"🚐","카라반":"🚎","건설기계":"🚜","물류·운반 장비":"📦","기타":"➕"}[type]||"🚗";
 }
 function renderStep1(){
  const count=state.photos.length;
- const vehicleTypes=["중고차","트럭","특장","버스","오토바이","캠핑카","카라반","건설기계","물류·운반 장비","트레일러"];
- const typeChoices=vehicleTypes.map((type,i)=>'<button type="button" class="vehicle-type '+(state.vehicle.listingType===type?"selected":"")+'" data-action="vehicle-type" data-value="'+esc(type)+'" aria-pressed="'+(state.vehicle.listingType===type)+'"><span class="vehicle-type-icon" aria-hidden="true">'+vehicleTypeIcon(type,i)+'</span><span>'+esc(type)+'</span></button>').join("");
+ const vehicleTypes=["중고차","트럭·특장","버스","오토바이","캠핑카","카라반","건설기계","물류·운반 장비","트레일러","기타"];
+ const typeChoices=vehicleTypes.map(type=>'<button type="button" class="vehicle-type '+(state.vehicle.listingType===type?"selected":"")+'" data-action="vehicle-type" data-value="'+esc(type)+'" aria-pressed="'+(state.vehicle.listingType===type)+'"><span class="vehicle-type-icon" aria-hidden="true">'+vehicleTypeIcon(type)+'</span><span>'+esc(type)+'</span></button>').join("");
  const modeTabs=[
   ["link","↗","매물 링크 붙여넣기"],
   ["photos","▧","사진 직접 올리기"]
