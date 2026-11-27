@@ -104,10 +104,9 @@ function highlightButtons(){
  return choices.map(x=>'<button class="choice-pill '+(state.vehicle.highlights.indexOf(x)>=0?"selected":"")+'" data-action="highlight" data-value="'+x+'">'+x+'</button>').join("");
 }
 function photoStrip(){
- const photos=state.photos;
- const thumbs=photos.map((p,i)=>'<div class="photo-thumb"><img src="'+p.url+'" alt="차량 사진 '+(i+1)+'"><span>'+(i===0?'대표':'사진 '+(i+1))+'</span></div>').join('');
- const note=photos.length?'첫 번째 사진이 영상 대표 사진으로 사용됩니다.':'등록된 사진이 없습니다. 이전 단계에서 사진을 등록해 주세요.';
- return '<section class="card photo-review-card"><div class="photo-review-head"><div><p class="hint">'+note+'</p></div><div class="photo-review-actions"><span class="status-badge">'+photos.length+'장</span><button type="button" class="secondary" data-action="back">사진 수정</button></div></div>'+(photos.length?'<div class="photo-strip">'+thumbs+'</div>':'<div class="photo-review-empty"><span aria-hidden="true">▧</span><span>사진 미리보기가 여기에 표시됩니다.</span></div>')+'</section>';
+ if(!state.photos.length)return "";
+ const thumbs=state.photos.map((p,i)=>'<div class="photo-thumb"><img src="'+p.url+'" alt="차량 사진 '+(i+1)+'"><span>'+(i===0?'대표':'사진 '+(i+1))+'</span></div>').join('');
+ return '<section class="card photo-review-card"><div class="photo-review-actions"><span class="status-badge">'+state.photos.length+'장</span><button type="button" class="secondary" data-action="back">사진 수정</button></div><div class="photo-strip">'+thumbs+'</div></section>';
 }
 function renderStep2(){
  const v=state.vehicle;
