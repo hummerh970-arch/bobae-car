@@ -86,12 +86,27 @@ function renderStep1(){
  const photoBlock='<div class="photo-upload"><div class="card-head"><div><h2 class="upload-title">사진 업로드</h2><p class="upload-description">여러 각도에서 촬영한 선명한 사진을 10~30장 올려주세요.</p></div><span class="status-badge">'+count+' / 30</span></div><div class="drop" id="drop-area" role="button" tabindex="0"><span class="upload-icon">＋</span><strong>사진을 여기에 끌어다 놓으세요</strong><small>클릭해서 선택 · JPG, PNG, WEBP · 장당 최대 20MB</small></div>'+(count?'<div class="photo-count"><span>드래그 또는 화살표로 장면 순서 변경</span><span>첫 번째 사진이 표지입니다</span></div><div class="thumb-grid">'+photoThumbs()+'</div>':'<div class="upload-note" style="display:flex;align-items:center;gap:8px;white-space:nowrap"><b>촬영 순서 추천</b><span>전면 3/4 · 측면 · 후면 · 실내 · 계기판 · 주요 옵션</span></div>')+'</div>';
  app.innerHTML=shell('<section class="page-grid"><div class="main-column"><div class="intro"><h1>영상 만들기</h1><p class="lead">사진을 올리고, 정보를 입력하면 바로 게시할 수 있는 릴스가 완성됩니다</p></div><section class="card vehicle-type-card"><div class="card-head"><div><p class="eyebrow">매물 유형</p><h2>어떤 매물을 등록하시나요?</h2><p class="type-description">유형을 선택하면 다음 단계의 차량 정보와 영상에 반영됩니다.</p></div><span class="type-selection" aria-live="polite">선택됨 · <b>'+esc(state.vehicle.listingType)+'</b></span></div><div class="vehicle-type-grid" role="group" aria-label="매물 유형">'+typeChoices+'</div></section><section class="card entry-card"><div class="card-head"><div><p class="eyebrow">매물 등록 방식</p><h2>어떤 방법으로 시작할까요?</h2></div></div><div class="entry-mode-grid" role="tablist" aria-label="매물 등록 방식">'+modeTabs+'</div>'+modePanel+photoBlock+'</section><button class="primary wide" data-action="next" '+(count<10?"disabled":"")+'>다음 · 차량 정보 ›</button></div><aside class="side-card"><p class="eyebrow">제작 단계</p><div class="mini-step active"><b>01</b><span>매물과 사진</span><small>10~30장 등록</small></div><div class="mini-step"><b>02</b><span>차량 정보</span><small>사실 정보와 판매자</small></div><div class="mini-step"><b>03</b><span>영상 설정</span><small>스타일·오디오·저장</small></div><div class="side-tip"><span>팁</span><p>첫 사진은 차량 전체가 잘 보이는 전면 또는 측면 사진으로 선택하세요.</p></div><p class="side-foot">현재 브라우저에서 작업 중</p></aside></section>');
 }
+function formatGroupedValue(value){
+ const raw=String(value||"");
+ const match=raw.match(/^(\s*)(\d[\d,]*)(.*)$/);
+ if(!match)return raw;
+ const number=Number(match[2].replace(/,/g,""));
+ return Number.isFinite(number)?match[1]+new Intl.NumberFormat("ko-KR").format(number)+match[3]:raw;
+}
+function caretForDigits(value,count){
+ if(count<=0)return 0;
+ let seen=0;
+ for(let i=0;i<value.length;i++)if(/\d/.test(value[i])&&++seen>=count)return i+1;
+ return value.length;
+}
 function field(label,key,placeholder,required,opts,type){
  const v=state.vehicle[key]||"";
+ const grouped=["newPrice","price","mileage","engine"].includes(key);
+ const inputValue=grouped?formatGroupedValue(v):v;
  const mark=required?'<em class="required-mark" aria-hidden="true">*</em>':'';
  const suffix=key==="price"?'<span class="field-suffix" aria-hidden="true">원</span>':'';
  if(opts)return '<label class="field">'+label+'<span class="field-control has-select"><select data-field="'+key+'" '+(required?'required aria-required="true"':'')+'>'+opts.map(o=>'<option value="'+esc(o[0])+'" '+(String(v)===String(o[0])?"selected":"")+'>'+esc(o[1])+'</option>').join("")+'</select><span class="select-caret" aria-hidden="true">⌄</span>'+mark+'</span></label>';
- return '<label class="field">'+label+'<span class="field-control '+(suffix?'has-suffix':'')+'"><input data-field="'+key+'" type="'+(type||"text")+'" value="'+esc(v)+'" placeholder="'+esc(placeholder||"")+'" '+(required?'required aria-required="true"':'')+'>'+suffix+mark+'</span></label>';
+ return '<label class="field">'+label+'<span class="field-control '+(suffix?'has-suffix':'')+'"><input data-field="'+key+'" type="'+(grouped?'text':(type||"text"))+'" '+(grouped?'inputmode="numeric"':'')+' value="'+esc(inputValue)+'" placeholder="'+esc(placeholder||"")+'" '+(required?'required aria-required="true"':'')+'>'+suffix+mark+'</span></label>';
 }
 function options(items){return [["","선택"],...items.map(x=>[x,x])]}
 function historyField(label,key,items){
@@ -427,7 +442,18 @@ function validVehicle(){const v=state.vehicle;return Boolean(v.make.trim()&&v.mo
 function onInput(e){
  const t=e.target;
  if(t.id==="listing-url"){state.listingUrl=t.value;saveDraft();return}
- if(t.dataset.field){state.vehicle[t.dataset.field]=t.value;saveDraft();if(state.step===3)drawPreview();if(state.step===2)refreshVehicleSummary();return}
+ if(t.dataset.field){
+  const key=t.dataset.field;
+  const grouped=["newPrice","price","mileage","engine"].includes(key);
+  if(grouped){
+   const caret=t.selectionStart||0;
+   const digitsBefore=t.value.slice(0,caret).replace(/\D/g,"").length;
+   const formatted=formatGroupedValue(t.value);
+   state.vehicle[key]=formatted;
+   if(formatted!==t.value){t.value=formatted;t.setSelectionRange(caretForDigits(formatted,digitsBefore),caretForDigits(formatted,digitsBefore))}
+  }else state.vehicle[key]=t.value;
+  saveDraft();if(state.step===3)drawPreview();if(state.step===2)refreshVehicleSummary();return
+ }
  if(t.id==="music-volume"){state.musicVolume=Number(t.value);const b=t.parentElement.querySelector("b");if(b)b.textContent=t.value+"%";saveDraft();return}
 }
 app.addEventListener("input",onInput);
