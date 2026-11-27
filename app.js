@@ -89,8 +89,9 @@ function renderStep1(){
 function field(label,key,placeholder,required,opts,type){
  const v=state.vehicle[key]||"";
  const mark=required?'<em class="required-mark" aria-hidden="true">*</em>':'';
+ const suffix=key==="price"?'<span class="field-suffix" aria-hidden="true">원</span>':'';
  if(opts)return '<label class="field">'+label+'<span class="field-control has-select"><select data-field="'+key+'" '+(required?'required aria-required="true"':'')+'>'+opts.map(o=>'<option value="'+esc(o[0])+'" '+(String(v)===String(o[0])?"selected":"")+'>'+esc(o[1])+'</option>').join("")+'</select><span class="select-caret" aria-hidden="true">⌄</span>'+mark+'</span></label>';
- return '<label class="field">'+label+'<span class="field-control"><input data-field="'+key+'" type="'+(type||"text")+'" value="'+esc(v)+'" placeholder="'+esc(placeholder||"")+'" '+(required?'required aria-required="true"':'')+'>'+mark+'</span></label>';
+ return '<label class="field">'+label+'<span class="field-control '+(suffix?'has-suffix':'')+'"><input data-field="'+key+'" type="'+(type||"text")+'" value="'+esc(v)+'" placeholder="'+esc(placeholder||"")+'" '+(required?'required aria-required="true"':'')+'>'+suffix+mark+'</span></label>';
 }
 function options(items){return [["","선택"],...items.map(x=>[x,x])]}
 function historyField(label,key,items){
