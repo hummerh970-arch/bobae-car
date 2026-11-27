@@ -261,3 +261,13 @@
 @media(max-width:420px){.vehicle-form-grid{grid-template-columns:minmax(0,1fr)}.topbar .local-chip{display:none}}@media(max-width:680px){
  .side-card{order:1}
 }
+/* Compact field controls and history choices */
+.field{font-size:12px;gap:6px}
+.field-control input,.field-control select{height:40px;padding:0 12px;font-size:13px}
+.field-control.has-select select{padding-right:34px}
+.history-grid .history-field{min-height:46px;gap:10px;padding:6px 0}
+.history-grid .field-control{flex:0 0 118px;width:118px}
+.history-grid .history-select{height:34px;font-size:12px}
+@media(max-width:900px){.history-grid .field-control{flex-basis:118px;width:118px}}
+@media(max-width:680px){.history-grid .history-field{min-height:44px;padding:5px 0}.history-grid .field-control{flex:0 0 118px;width:118px}}
+@media(max-width:360px){.history-grid .field-control{flex-basis:108px;width:108px}}
