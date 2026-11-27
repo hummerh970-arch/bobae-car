@@ -271,3 +271,18 @@
 @media(max-width:900px){.history-grid .field-control{flex-basis:118px;width:118px}}
 @media(max-width:680px){.history-grid .history-field{min-height:44px;padding:5px 0}.history-grid .field-control{flex:0 0 118px;width:118px}}
 @media(max-width:360px){.history-grid .field-control{flex-basis:108px;width:108px}}
+/* Step-two photo review and compact vehicle history card */
+.photo-review-card{min-width:0}
+.photo-review-head{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:12px}
+.photo-review-head .eyebrow{margin:0 0 4px}
+.photo-review-head .hint{margin:0;font-size:12px}
+.photo-review-actions{display:flex;align-items:center;gap:8px;flex:0 0 auto}
+.photo-review-actions .secondary{min-height:36px;padding:8px 12px;font-size:12px}
+.photo-strip{display:flex;gap:8px;min-width:0;overflow-x:auto;padding:2px 1px 7px;scrollbar-width:thin}
+.photo-thumb{position:relative;flex:0 0 76px;width:76px;height:76px;overflow:hidden;border-radius:11px;background:#eceef1}
+.photo-thumb img{display:block;width:100%;height:100%;object-fit:cover}
+.photo-thumb span{position:absolute;left:4px;bottom:4px;padding:3px 6px;border-radius:6px;background:#20243cd9;color:#fff;font-size:10px;font-weight:700}
+.photo-review-empty{display:flex;align-items:center;justify-content:center;gap:9px;min-height:76px;border:1px dashed #dfe1e6;border-radius:12px;background:#fafafb;color:#858993;font-size:12px}
+.photo-review-empty span:first-child{display:grid;place-items:center;width:30px;height:30px;border-radius:9px;background:#fff0e6;color:var(--orange);font-size:18px}
+.vehicle-history-card{width:100%;max-width:760px;margin-right:auto}
+@media(max-width:680px){.photo-review-head{align-items:flex-start;gap:8px}.photo-review-actions{gap:6px}.photo-review-actions .secondary{padding:7px 9px}.photo-thumb{flex-basis:68px;width:68px;height:68px}.vehicle-history-card{max-width:100%}}
