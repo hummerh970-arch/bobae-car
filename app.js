@@ -74,7 +74,7 @@ function vehicleTypeIcon(type){
 function renderStep1(){
  const count=state.photos.length;
  const vehicleTypes=["중고차","트럭·특장","버스","오토바이","캠핑카","카라반","건설기계","물류·운반 장비","트레일러","기타"];
- const typeChoices=vehicleTypes.map(type=>'<button type="button" class="vehicle-type '+(state.vehicle.listingType===type?"selected":"")+'" data-action="vehicle-type" data-value="'+esc(type)+'" aria-pressed="'+(state.vehicle.listingType===type)+'"><span class="vehicle-type-icon" aria-hidden="true">'+vehicleTypeIcon(type)+'</span><span>'+esc(type)+'</span></button>').join("");
+ const typeChoices=vehicleTypes.map(type=>'<button type="button" class="vehicle-type '+(state.vehicle.listingType===type?"selected":"")+'" data-action="vehicle-type" data-value="'+esc(type)+'" aria-pressed="'+(state.vehicle.listingType===type)+'"><span class="vehicle-type-icon '+(type==="기타"?"icon-other":"")+'" aria-hidden="true">'+vehicleTypeIcon(type)+'</span><span>'+esc(type)+'</span></button>').join("");
  const modeTabs=[
   ["link","↗","매물 링크 붙여넣기"],
   ["photos","▧","사진 직접 올리기"]
