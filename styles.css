@@ -231,3 +231,33 @@
 .highlight-field .listing-row{margin-top:8px}
 
 .dealer-form-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.logo-control{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-top:16px;padding:14px 15px;border:1px solid #e7e8ec;border-radius:13px;background:#fafafb}.logo-state{display:flex;align-items:center;gap:10px;color:#777b84;font-size:13px;font-weight:700}.logo-state::before{content:'○';display:grid;place-items:center;width:28px;height:28px;border-radius:50%;background:#f0f1f3;color:#8a8d95;font-size:14px}.logo-state.has-logo{color:#347b53}.logo-state.has-logo::before{content:'✓';background:#eaf6ee;color:#347b53}.logo-state small{max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#92959d;font-size:11px;font-weight:500}.logo-control .secondary{flex:0 0 auto;min-width:120px;padding:11px 15px}@media(max-width:680px){.dealer-form-grid{grid-template-columns:1fr}.logo-control{gap:10px;padding:12px}.logo-control .secondary{min-width:105px}.logo-state{gap:7px}.logo-state small{max-width:100px}}
+
+/* Page-wide spacing, responsive fields, and final-step cards */
+.card > .eyebrow{font-size:12px;letter-spacing:.035em;margin-bottom:13px}
+.field{font-size:13px;gap:7px}
+.field-control input,.field-control select{font-size:14px}
+.form-grid>.field,.vehicle-form-grid>.field,.main-column,.side-card{min-width:0}
+.field-control input,.field-control select,.field input,.field select,.field textarea{width:100%;min-width:0;max-width:100%}
+.template-card{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;min-height:160px;padding:20px 16px;text-align:center}
+.template-icon{display:grid;place-items:center;width:42px;height:42px;flex:0 0 42px;border:1px solid #f1e2d7;border-radius:13px;background:#fff;color:var(--orange);font-size:22px;line-height:1}
+.template-card b{display:block;font-size:15px;line-height:1.35}
+.template-card small{display:block;max-width:26ch;color:#7e818a;font-size:12px;line-height:1.5}
+.voice-box .check-row>span{display:grid;gap:4px;min-width:0}
+.voice-box .check-row small{font-size:12px;line-height:1.5;color:#777b84}
+.voice-box .form-grid{grid-template-columns:minmax(0,1fr);gap:10px}
+.voice-box .field{min-width:0}
+.voice-box input[type=file]{height:auto;min-height:42px;padding:7px 9px;font-size:12px}
+.voice-box input[type=file]::file-selector-button{min-height:28px;margin-right:8px;padding:5px 10px;border:1px solid #d8d9de;border-radius:8px;background:#f8f8fa;color:#444751;font:inherit;font-weight:700}
+.voice-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:0}
+.voice-actions button{min-width:0;min-height:42px;padding:9px 12px;white-space:normal;line-height:1.35}
+@media(max-width:680px){
+ .page-grid{width:calc(100% - 28px);max-width:100%;min-width:0}
+ .main-column,.side-card,.main-column>.card,.form-grid,.form-grid>.field,.vehicle-form-grid>.field{min-width:0;max-width:100%}
+ .template-card{min-height:145px;padding:16px 12px;gap:8px}
+ .template-card small{font-size:11px}
+ .voice-box{padding:13px}
+ .voice-actions{grid-template-columns:1fr}
+}
+@media(max-width:420px){.vehicle-form-grid{grid-template-columns:minmax(0,1fr)}.topbar .local-chip{display:none}}@media(max-width:680px){
+ .side-card{order:1}
+}
