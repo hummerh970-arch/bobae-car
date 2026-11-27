@@ -404,3 +404,42 @@
  .photo-review-actions .secondary{font-size:11px}
  .listing-step-actions .secondary,.listing-step-actions .primary{padding:9px 12px;font-size:12px}
 }
+
+/* Shared geometry and surfaces across all three creation steps. */
+.wizard-row{width:calc(100% - 40px)}
+.editor-layout{width:calc(100% - 40px);max-width:1180px;grid-template-columns:minmax(0,1fr) 294px;gap:22px;margin:22px auto 56px}
+.editor-main{min-width:0}
+.editor-layout>.summary{position:sticky;top:84px;padding:20px;border-radius:18px}
+.page-grid>.side-card:not(.vehicle-summary-card){background:#20243c;color:#fff;border:1px solid #34394f;box-shadow:0 14px 30px #17192224}
+.page-grid>.side-card:not(.vehicle-summary-card) .eyebrow{color:#b8bdcd}
+.page-grid>.side-card:not(.vehicle-summary-card) .mini-step{color:#d2d6e1;border-bottom-color:#ffffff29}
+.page-grid>.side-card:not(.vehicle-summary-card) .mini-step b{color:#adb3c4}
+.page-grid>.side-card:not(.vehicle-summary-card) .mini-step.active b,.page-grid>.side-card:not(.vehicle-summary-card) .side-tip span{color:#ffad70}
+.page-grid>.side-card:not(.vehicle-summary-card) .mini-step small,.page-grid>.side-card:not(.vehicle-summary-card) .side-foot{color:#adb3c4}
+.page-grid>.side-card:not(.vehicle-summary-card) .side-tip{background:#ffffff12;border:1px solid #ffffff24;color:#d2d6e1}
+.page-grid>.side-card:not(.vehicle-summary-card) .side-foot{margin-top:14px}
+.vehicle-type-grid{grid-auto-rows:46px}
+.vehicle-type{height:100%;min-height:0;gap:6px;padding:8px 9px;white-space:nowrap;font-size:12px}
+.vehicle-type-icon{flex-basis:22px;width:22px}
+.entry-mode-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:5px;padding:4px}
+.entry-mode{min-width:0;min-height:44px;padding:8px 10px;font-size:13px}
+.entry-mode b{line-height:1.35}
+@media(max-width:1080px){.vehicle-type-grid{grid-template-columns:repeat(4,minmax(0,1fr))}}
+@media(max-width:900px){
+ .editor-layout{width:calc(100% - 32px);grid-template-columns:minmax(0,1fr) 260px;gap:16px}
+ .vehicle-type-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+@media(max-width:680px){
+ .wizard-row{width:calc(100% - 24px)}
+ .editor-layout{display:flex;width:calc(100% - 28px);flex-direction:column;gap:0;margin:16px auto 40px}
+ .editor-main,.editor-layout>.summary{width:100%}
+ .editor-layout>.summary{order:1;position:static;margin-top:2px;padding:17px}
+ .vehicle-type-grid{grid-template-columns:repeat(2,minmax(0,1fr));grid-auto-rows:44px}
+ .vehicle-type{gap:5px;padding:7px;font-size:11px}
+ .vehicle-type-icon{flex-basis:20px;width:20px}
+ .entry-mode{min-height:42px;padding:7px 6px;font-size:12px}
+}
+@media(max-width:480px){
+ .editor-layout{width:calc(100% - 24px)}
+ .editor-layout>.summary{padding:16px}
+}
