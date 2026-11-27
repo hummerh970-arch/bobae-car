@@ -108,17 +108,25 @@ function photoStrip(){
  const thumbs=state.photos.map((p,i)=>'<div class="photo-thumb"><img src="'+p.url+'" alt="차량 사진 '+(i+1)+'"><span>'+(i===0?'대표':'사진 '+(i+1))+'</span></div>').join('');
  return '<section class="card photo-review-card"><div class="photo-review-actions"><span class="status-badge">'+state.photos.length+'장</span><button type="button" class="secondary" data-action="back">사진 수정</button></div><div class="photo-strip">'+thumbs+'</div></section>';
 }
+function summaryMeasure(value,unit){
+ const raw=String(value||'').trim();
+ if(!raw)return '';
+ const match=raw.match(/\d[\d,]*(?:\.\d+)?/);
+ if(!match)return raw;
+ const number=Number(match[0].replace(/,/g,''));
+ return Number.isFinite(number)?new Intl.NumberFormat('ko-KR',{maximumFractionDigits:2}).format(number)+unit:raw;
+}
 function vehicleSummaryMarkup(){
  const v=state.vehicle;
  const row=(label,value)=>value?'<div class="vehicle-summary-line"><span>'+esc(label)+'</span><b>'+esc(value)+'</b></div>':'';
  const rows=[
   row('연식',v.year),
   row('트림',v.trim),
-  row('주행거리',v.mileage),
+  row('주행거리',summaryMeasure(v.mileage,' km')),
   row('차체 · 색상',[v.body,v.color].filter(Boolean).join(' · ')),
   row('연료 · 변속기',[v.fuel,v.transmission].filter(Boolean).join(' · ')),
   row('구동 방식',v.drive),
-  row('배기량 · 출력',[v.engine,v.power].filter(Boolean).join(' · ')),
+  row('배기량 · 출력',[summaryMeasure(v.engine,' cc'),summaryMeasure(v.power,'마력')].filter(Boolean).join(' · ')),
   row('판매 방식',v.saleMethod),
   row('신차 가격',v.newPrice?new Intl.NumberFormat('ko-KR').format(Number(String(v.newPrice).replace(/[^0-9]/g,'')))+'원':'')
  ].filter(Boolean).join('');
