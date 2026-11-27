@@ -13,7 +13,7 @@ const defaults = {
  step: 1, photos: [], listingUrl: "", entryMode: "link", language: "한국어", template: "쇼룸", ratio: "9:16", duration: 15, resolution: 720,
  music: "시네마틱", musicVolume: 24, captions: true, showPrice: true, voice: false, ttsReady: false, narrationFile: null,
  logoUrl: "", logoImage: null, logoName: "", resultUrl: "", resultType: "", busy: false, selectedPreset: "", captionStyle:"기본",
- vehicle: { listingType:"중고차", make:"", model:"", trim:"", year:"", newPrice:"", price:"", currency:"KRW", mileage:"", power:"", engine:"", transmission:"", fuel:"", drive:"", body:"", color:"", businessName:"", dealer:"", phone:"", address:"", condition:"중고차", saleMethod:"현금", description:"", highlights:[], cta:"차량 문의하기", inquiryUrl:"" },
+ vehicle: { listingType:"중고차", make:"", model:"", trim:"", year:"", newPrice:"", price:"", currency:"KRW", mileage:"", power:"", torque:"", engine:"", transmission:"", fuel:"", drive:"", body:"", color:"", businessName:"", dealer:"", phone:"", address:"", condition:"중고차", saleMethod:"현금", description:"", highlights:[], cta:"차량 문의하기", inquiryUrl:"" },
  history: { accident:"미확인", flood:"미확인", totalLoss:"미확인", floodTotalLoss:"미확인", damage:"미확인", repair:"미확인", ownerChanges:"미확인", owners:"미확인", repaint:"미확인", replacement:"미확인", usage:"미확인", warranty:"미확인" }
 };
 const state = Object.assign({}, defaults, saved, { photos:[], narrationFile:null, logoImage:null, resultUrl:"", busy:false });
@@ -93,10 +93,10 @@ function formatGroupedValue(value){
  const number=Number(match[2].replace(/,/g,""));
  return Number.isFinite(number)?match[1]+new Intl.NumberFormat("ko-KR").format(number)+match[3]:raw;
 }
-function caretForDigits(value,count){
+function caretForInput(value,count){
  if(count<=0)return 0;
  let seen=0;
- for(let i=0;i<value.length;i++)if(/\d/.test(value[i])&&++seen>=count)return i+1;
+ for(let i=0;i<value.length;i++)if(value[i]!==","&&++seen>=count)return i+1;
  return value.length;
 }
 function field(label,key,placeholder,required,opts,type){
@@ -105,8 +105,18 @@ function field(label,key,placeholder,required,opts,type){
  const inputValue=grouped?formatGroupedValue(v):v;
  const mark=required?'<em class="required-mark" aria-hidden="true">*</em>':'';
  const suffix=key==="price"?'<span class="field-suffix" aria-hidden="true">원</span>':'';
+ const inputMode=grouped?'numeric':'';
  if(opts)return '<label class="field">'+label+'<span class="field-control has-select"><select data-field="'+key+'" '+(required?'required aria-required="true"':'')+'>'+opts.map(o=>'<option value="'+esc(o[0])+'" '+(String(v)===String(o[0])?"selected":"")+'>'+esc(o[1])+'</option>').join("")+'</select><span class="select-caret" aria-hidden="true">⌄</span>'+mark+'</span></label>';
- return '<label class="field">'+label+'<span class="field-control '+(suffix?'has-suffix':'')+'"><input data-field="'+key+'" type="'+(grouped?'text':(type||"text"))+'" '+(grouped?'inputmode="numeric"':'')+' value="'+esc(inputValue)+'" placeholder="'+esc(placeholder||"")+'" '+(required?'required aria-required="true"':'')+'>'+suffix+mark+'</span></label>';
+ return '<label class="field">'+label+'<span class="field-control '+(suffix?'has-suffix ':'')+(required?'has-required':'')+'"><input data-field="'+key+'" type="'+(grouped?'text':(type||"text"))+'" '+(inputMode?'inputmode="'+inputMode+'"':'')+' value="'+esc(inputValue)+'" placeholder="'+esc(placeholder||"")+'" '+(required?'required aria-required="true"':'')+'>'+suffix+mark+'</span></label>';
+}
+function unitInput(key,label,placeholder,unit){
+ const raw=String(state.vehicle[key]||"");
+ const match=raw.match(/^\s*\d[\d,]*(?:\.\d+)?/);
+ const value=match?formatGroupedValue(match[0]):raw;
+ return '<span class="field-control has-suffix"><input type="text" inputmode="decimal" data-field="'+key+'" aria-label="'+label+'" value="'+esc(value)+'" placeholder="'+esc(placeholder)+'"><span class="field-suffix" aria-hidden="true">'+unit+'</span></span>';
+}
+function powerTorqueField(){
+ return '<label class="field power-torque-field">최대 출력 · 토크<span class="power-torque-inputs">'+unitInput("power","최대 출력","예: 170","마력")+unitInput("torque","최대 토크","예: 37.7","kg·m")+'</span></label>';
 }
 function options(items){return [["","선택"],...items.map(x=>[x,x])]}
 function historyField(label,key,items){
@@ -140,7 +150,8 @@ function vehicleSummaryMarkup(){
   row('차체 · 색상',[v.body,v.color].filter(Boolean).join(' · ')),
   row('연료 · 변속기',[v.fuel,v.transmission].filter(Boolean).join(' · ')),
   row('구동 방식',v.drive),
-  row('배기량 · 출력',[summaryMeasure(v.engine,' cc'),summaryMeasure(v.power,'마력')].filter(Boolean).join(' · ')),
+  row('배기량 · 최대 출력',v.engine&&v.power?summaryMeasure(v.engine,' cc')+' ('+summaryMeasure(v.power,'마력')+')':[summaryMeasure(v.engine,' cc'),summaryMeasure(v.power,'마력')].filter(Boolean).join(' ')),
+  row('최대 토크',summaryMeasure(v.torque,' kg·m')),
   row('판매 방식',v.saleMethod),
   row('신차 가격',v.newPrice?new Intl.NumberFormat('ko-KR').format(Number(String(v.newPrice).replace(/[^0-9]/g,'')))+'원':'')
  ].filter(Boolean).join('');
@@ -152,7 +163,7 @@ function refreshVehicleSummary(){const aside=$('.vehicle-summary-card');if(aside
 function renderStep2(){
  const v=state.vehicle;
  const history='<section class="card vehicle-history-card"><p class="eyebrow">차량 상태·이력</p><p class="hint">확인된 정보만 선택하고, 모르는 항목은 미확인으로 두세요.</p><div class="history-grid">'+historyField("사고 이력","accident",["미확인","없음","있음"])+historyField("침수·전손 이력","floodTotalLoss",["미확인","없음","있음"])+historyField("내차 피해 이력","damage",["미확인","없음","있음"])+historyField("수리 이력","repair",["미확인","없음","있음"])+historyField("특수 용도 이력","usage",["미확인","없음","렌트","영업용","택시","관용"])+historyField("소유자 변경","ownerChanges",["미확인","없음","1회","2회","3회 이상"])+historyField("보증 상태","warranty",["미확인","유효","만료"])+'</div></section>';
- app.innerHTML=shell(`<section class="page-grid"><div class="main-column"><div class="section-top"><div><h1>차량 정보 확인</h1><p class="lead">사진을 확인한 뒤 차량 정보를 직접 입력하세요. 입력한 정보가 영상에 반영됩니다.</p></div></div>${photoStrip()}<section class="card"><p class="eyebrow">기본 정보</p><div class="form-grid vehicle-form-grid">${field("제조사","make","예: BMW",true)}${field("모델","model","예: X4",true)}${field("트림","trim","예: 20i M Sport")}${field("연식","year","예: 2022",true,null,"number")}${field("주행거리","mileage","예: 42,000 km")}${field("색상","color","예: 미네랄 화이트")}</div></section><section class="card"><p class="eyebrow">판매 정보</p><div class="form-grid vehicle-form-grid">${field("신차가격","newPrice","예: 45,000,000",false,null,"number")}${field("판매가격","price","예: 38,900,000",true,null,"number")}${field("판매 방식","saleMethod","",false,options(["현금","할부","리스","렌트","협의"]))}</div></section><section class="card"><p class="eyebrow">차량 제원·사양</p><div class="form-grid vehicle-form-grid">${field("차체 유형","body","",false,options(["세단","SUV","해치백","쿠페","왜건","픽업","기타"]))}${field("연료","fuel","",false,options(["가솔린","디젤","하이브리드","전기","LPG","기타"]))}${field("변속기","transmission","",false,options(["자동","수동","CVT","DCT"]))}${field("구동 방식","drive","",false,options(["전륜","후륜","AWD","4WD"]))}${field("배기량","engine","예: 1,998 cc")}${field("출력","power","예: 184 ps")}</div></section>${history}<section class="card"><p class="eyebrow">매물 설명 · 주요 장점</p><div class="field highlight-field"><div class="highlight-head"><span>주요 장점</span><small>${v.highlights.length}/5 선택</small></div><div class="choice-row highlight-choices">${highlightButtons()}</div><div class="listing-row"><input id="new-highlight" type="text" placeholder="직접 추가"><button class="secondary" data-action="add-highlight">추가</button></div></div><label class="field">매물 설명<textarea data-field="description" rows="3" placeholder="차량의 특징과 확인된 상태를 입력하세요.">${esc(v.description)}</textarea></label></section><section class="card"><p class="eyebrow">딜러 카드·브랜드</p><div class="form-grid dealer-form-grid">${field("상호명","businessName","예: 보배모터")}${field("판매자명","dealer","예: 홍길동")}${field("전화번호","phone","010-0000-0000",false,null,"tel")}${field("주소","address","매장 위치")}</div><div class="logo-control"><div class="logo-state ${state.logoImage?"has-logo":""}" aria-live="polite"><span>${state.logoImage?"✓ 로고 있음":"로고 없음"}</span>${state.logoImage&&state.logoName?"<small>"+esc(state.logoName)+"</small>":""}</div><input id="logo-file" type="file" accept="image/png,image/jpeg,image/webp" hidden><button type="button" class="secondary" data-action="logo-add">${state.logoImage?"로고 변경":"+ 로고 추가"}</button></div><p class="hint">추가한 로고는 영상에 표시됩니다. PNG, JPG, WEBP 파일을 사용할 수 있습니다.</p></section><div class="button-row listing-step-actions"><button class="secondary" data-action="back">이전</button><button class="primary" data-action="next">영상 설정</button></div></div>${vehicleSummaryMarkup()}</section>`);
+ app.innerHTML=shell(`<section class="page-grid"><div class="main-column"><div class="section-top"><div><h1>차량 정보 확인</h1><p class="lead">사진을 확인한 뒤 차량 정보를 직접 입력하세요. 입력한 정보가 영상에 반영됩니다.</p></div></div>${photoStrip()}<section class="card"><p class="eyebrow">기본 정보</p><div class="form-grid vehicle-form-grid">${field("제조사","make","예: BMW",true)}${field("모델","model","예: X4",true)}${field("트림","trim","예: 20i M Sport")}${field("연식","year","예: 2022",true,null,"number")}${field("주행거리","mileage","예: 42,000 km")}${field("색상","color","예: 미네랄 화이트")}</div></section><section class="card"><p class="eyebrow">판매 정보</p><div class="form-grid vehicle-form-grid">${field("신차가격","newPrice","예: 45,000,000",false,null,"number")}${field("판매가격","price","예: 38,900,000",true,null,"number")}${field("판매 방식","saleMethod","",false,options(["현금","할부","리스","렌트","협의"]))}</div></section><section class="card"><p class="eyebrow">차량 제원·사양</p><div class="form-grid vehicle-form-grid">${field("차체 유형","body","",false,options(["세단","SUV","해치백","쿠페","왜건","픽업","기타"]))}${field("연료","fuel","",false,options(["가솔린","디젤","하이브리드","전기","LPG","기타"]))}${field("변속기","transmission","",false,options(["자동","수동","CVT","DCT"]))}${field("구동 방식","drive","",false,options(["전륜","후륜","AWD","4WD"]))}${field("배기량","engine","예: 2,497 cc")}${powerTorqueField()}</div></section>${history}<section class="card"><p class="eyebrow">매물 설명 · 주요 장점</p><div class="field highlight-field"><div class="highlight-head"><span>주요 장점</span><small>${v.highlights.length}/5 선택</small></div><div class="choice-row highlight-choices">${highlightButtons()}</div><div class="listing-row"><input id="new-highlight" type="text" placeholder="직접 추가"><button class="secondary" data-action="add-highlight">추가</button></div></div><label class="field">매물 설명<textarea data-field="description" rows="3" placeholder="차량의 특징과 확인된 상태를 입력하세요.">${esc(v.description)}</textarea></label></section><section class="card"><p class="eyebrow">딜러 카드·브랜드</p><div class="form-grid dealer-form-grid">${field("상호명","businessName","예: 보배모터")}${field("판매자명","dealer","예: 홍길동")}${field("전화번호","phone","010-0000-0000",false,null,"tel")}${field("주소","address","매장 위치")}</div><div class="logo-control"><div class="logo-state ${state.logoImage?"has-logo":""}" aria-live="polite"><span>${state.logoImage?"✓ 로고 있음":"로고 없음"}</span>${state.logoImage&&state.logoName?"<small>"+esc(state.logoName)+"</small>":""}</div><input id="logo-file" type="file" accept="image/png,image/jpeg,image/webp" hidden><button type="button" class="secondary" data-action="logo-add">${state.logoImage?"로고 변경":"+ 로고 추가"}</button></div><p class="hint">추가한 로고는 영상에 표시됩니다. PNG, JPG, WEBP 파일을 사용할 수 있습니다.</p></section><div class="button-row listing-step-actions"><button class="secondary" data-action="back">이전</button><button class="primary" data-action="next">영상 설정</button></div></div>${vehicleSummaryMarkup()}</section>`);
 }
 function renderStep3(){
  const v=state.vehicle;
@@ -197,7 +208,7 @@ function addFiles(files){
 function setVehicle(data){
  if(!data||typeof data!=="object")return;
  const v=data.vehicle||data;
- ["make","model","trim","year","price","currency","mileage","power","engine","transmission","fuel","drive","body","color","dealer","phone","address","description","cta","inquiryUrl"].forEach(k=>{if(data[k]!=null)state.vehicle[k]=String(data[k]);else if(data.vehicle&&data.vehicle[k]!=null)state.vehicle[k]=String(data.vehicle[k])});
+ ["make","model","trim","year","price","currency","mileage","power","torque","engine","transmission","fuel","drive","body","color","dealer","phone","address","description","cta","inquiryUrl"].forEach(k=>{if(data[k]!=null)state.vehicle[k]=String(data[k]);else if(data.vehicle&&data.vehicle[k]!=null)state.vehicle[k]=String(data.vehicle[k])});
  if(Array.isArray(data.highlights))state.vehicle.highlights=data.highlights.slice(0,5);
  if(Array.isArray(data.vehicle?.highlights))state.vehicle.highlights=data.vehicle.highlights.slice(0,5);
  if(data.history)state.history=Object.assign({},state.history,data.history);
@@ -444,13 +455,13 @@ function onInput(e){
  if(t.id==="listing-url"){state.listingUrl=t.value;saveDraft();return}
  if(t.dataset.field){
   const key=t.dataset.field;
-  const grouped=["newPrice","price","mileage","engine"].includes(key);
+  const grouped=["newPrice","price","mileage","engine","power","torque"].includes(key);
   if(grouped){
    const caret=t.selectionStart||0;
-   const digitsBefore=t.value.slice(0,caret).replace(/\D/g,"").length;
+   const charsBefore=t.value.slice(0,caret).replace(/,/g,"").length;
    const formatted=formatGroupedValue(t.value);
    state.vehicle[key]=formatted;
-   if(formatted!==t.value){t.value=formatted;t.setSelectionRange(caretForDigits(formatted,digitsBefore),caretForDigits(formatted,digitsBefore))}
+   if(formatted!==t.value){t.value=formatted;t.setSelectionRange(caretForInput(formatted,charsBefore),caretForInput(formatted,charsBefore))}
   }else state.vehicle[key]=t.value;
   saveDraft();if(state.step===3)drawPreview();if(state.step===2)refreshVehicleSummary();return
  }
