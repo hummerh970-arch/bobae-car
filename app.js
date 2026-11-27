@@ -123,7 +123,7 @@ function vehicleSummaryMarkup(){
   row('신차 가격',v.newPrice?new Intl.NumberFormat('ko-KR').format(Number(String(v.newPrice).replace(/[^0-9]/g,'')))+'원':'')
  ].filter(Boolean).join('');
  const empty=rows?'':'<p class="vehicle-summary-empty">차량 정보를 입력하면 요약에 표시됩니다.</p>';
- return '<aside class="side-card vehicle-summary-card"><p class="eyebrow">매물 요약</p><h3>'+esc(carTitle()||'차량 정보를 입력하세요')+'</h3><div class="vehicle-summary-photo"><span>사진</span><b>'+state.photos.length+'장</b></div><div class="vehicle-summary-price"><span>판매가격</span><strong>'+esc(priceText())+'</strong></div><div class="vehicle-summary-list">'+rows+'</div>'+empty+'</aside>';
+ return '<aside class="side-card vehicle-summary-card"><div class="vehicle-summary-head"><p class="eyebrow">매물 요약</p><span class="vehicle-summary-photo">사진 '+state.photos.length+'장</span></div><h3>'+esc(carTitle()||'차량 정보를 입력하세요')+'</h3><div class="vehicle-summary-price"><span>판매가격</span><strong>'+esc(priceText())+'</strong></div><div class="vehicle-summary-details"><p class="vehicle-summary-section-title">차량 정보</p><div class="vehicle-summary-list">'+rows+'</div></div>'+empty+'</aside>';
 }
 function refreshVehicleSummary(){const aside=$('.vehicle-summary-card');if(aside)aside.outerHTML=vehicleSummaryMarkup()}
 
