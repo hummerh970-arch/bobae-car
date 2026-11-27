@@ -163,9 +163,3 @@
 .mini-step{padding:11px 0}
 @media(max-width:900px){.page-grid{grid-template-columns:minmax(0,1fr) 260px;gap:14px}}
 @media(max-width:680px){.page-grid{margin-top:18px}.intro{padding:5px 1px 8px}.intro h1{font-size:24px}.intro .lead{font-size:12px;margin-bottom:13px}.entry-card{padding:14px}.entry-card h2{font-size:16px}.entry-mode{min-height:38px;padding:7px 5px}.entry-mode b{font-size:11px}.entry-panel{padding:9px 1px 7px}.entry-panel .listing-row{gap:6px}.entry-panel .listing-row input{height:38px;padding:0 10px;font-size:12px}.entry-panel .listing-row .secondary{height:38px;padding:0 10px;font-size:11px}.entry-panel .hint{font-size:10px}.photo-upload{padding-top:9px}.photo-upload .drop{min-height:74px;padding:8px 10px}.photo-upload .upload-icon{width:36px;height:36px;flex-basis:36px}.photo-upload .drop strong{font-size:12px}.photo-upload .drop small{font-size:10px}.side-card{padding:16px}}
-
-/* Photo counter and composition hint */
-.upload-meta{display:flex;align-items:center;justify-content:flex-end;gap:9px;max-width:360px;text-align:right}
-.upload-meta .status-badge{flex:0 0 auto}
-.upload-tip{color:#8d9098;font-size:11px;line-height:1.4}
-@media(max-width:680px){.upload-meta{align-items:flex-end;flex-direction:column;gap:5px;max-width:145px}.upload-tip{font-size:10px}}
