@@ -67,7 +67,7 @@ function photoThumbs(){
  return state.photos.map((p,i)=>'<article class="thumb '+(i===0?"cover":"")+'" draggable="true" data-drag="'+i+'"><img src="'+p.url+'" alt="차량 사진 '+(i+1)+'"><span class="num">'+(i===0?"표지":(i+1))+'</span><button class="remove" data-action="remove" data-index="'+i+'" aria-label="사진 '+(i+1)+' 삭제">×</button><div class="sort"><button data-action="move-left" data-index="'+i+'" aria-label="왼쪽으로 이동">←</button><button data-action="move-right" data-index="'+i+'" aria-label="오른쪽으로 이동">→</button></div></article>').join("");
 }
 function vehicleTypeIcon(type){
- if(type==="트럭·특장")return '<span class="icon-duo"><span>🚚</span><span>🛠️</span></span>';
+ if(type==="트럭·특장")return "🚚";
  return {"중고차":"🚗","버스":"🚌","오토바이":"🏍️","캠핑카":"🚐","카라반":"🚎","건설기계":"🚜","물류·운반 장비":"📦","트레일러":"🚛","기타":"➕"}[type]||"🚗";
 }
 function renderStep1(){
