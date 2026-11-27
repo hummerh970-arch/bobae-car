@@ -198,3 +198,23 @@
 @media(max-width:900px){.vehicle-form-grid,.history-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:680px){.history-grid{grid-template-columns:1fr;gap:7px}.history-grid .history-field{padding:10px 11px}}
 @media(max-width:390px){.vehicle-form-grid{grid-template-columns:1fr}}
+
+/* Consistent vehicle form controls and selection states. */
+.field{gap:6px;color:#5e626d;font-size:12px;line-height:1.4;font-weight:700}
+.field-control{position:relative;display:block;width:100%}
+.field-control input,.field-control select{height:44px;padding:0 13px;border:1px solid #d7d9df;border-radius:11px;background:#fff;color:#292c35;font-size:13px}
+.field-control input:focus,.field-control select:focus{border-color:var(--orange);box-shadow:0 0 0 3px #e77a2f1a}
+.field-control input::placeholder{color:#a4a6ad}
+.field-control input{padding-right:34px}
+.field-control.has-select select{appearance:none;padding-right:36px}
+.select-caret{position:absolute;right:12px;top:50%;transform:translateY(-58%);pointer-events:none;color:#888b94;font-size:17px;line-height:1}
+.required-mark{position:absolute;right:12px;top:50%;transform:translateY(-50%);color:var(--orange);font-size:14px;font-style:normal;font-weight:800}
+.choice-row{gap:8px}
+.choice-pill{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:34px;padding:8px 12px;transition:border-color .15s,background .15s,color .15s,box-shadow .15s}
+.choice-pill.selected::before{content:"✓";display:inline-grid;place-items:center;width:15px;height:15px;border-radius:50%;background:#f8ddca;color:#a95522;font-size:10px;font-weight:900;line-height:1}
+.history-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:9px 12px}
+.history-grid .history-field{gap:6px;padding:11px 12px;border-color:#e7e8ec;background:#fafbfc;color:#555963;font-size:12px;font-weight:700}
+.history-grid .history-select{height:40px;border:1px solid #dfe1e6;border-radius:10px;background:#fff;color:#343741;font-size:12px}
+.history-grid .history-select:focus{border-color:var(--orange);box-shadow:0 0 0 3px #e77a2f1a}
+@media(max-width:900px){.history-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:680px){.history-grid{grid-template-columns:1fr;gap:7px}.history-grid .history-field{grid-template-columns:minmax(98px,1fr) minmax(140px,1.4fr);align-items:center;padding:9px 11px}.history-grid .field-control.has-select{min-width:0}}
