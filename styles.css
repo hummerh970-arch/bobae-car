@@ -222,3 +222,10 @@
 
 .field-control.has-suffix input{padding-right:56px}
 .field-suffix{position:absolute;right:31px;top:50%;transform:translateY(-50%);color:#737782;font-size:12px;font-weight:700;pointer-events:none}
+
+.highlight-field{min-width:0;margin-top:14px}
+.highlight-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;color:#555963;font-size:12px;font-weight:700}
+.highlight-head small{padding:4px 8px;border-radius:20px;background:#fff4ec;color:#a95a2a;font-size:10px;font-weight:800}
+.highlight-choices{display:flex;flex-wrap:nowrap;gap:7px;max-width:100%;overflow-x:auto;overflow-y:hidden;padding:2px 2px 9px;scrollbar-width:thin;scrollbar-color:#d8dadf transparent}
+.highlight-choices .choice-pill{flex:0 0 auto;min-height:34px;padding:7px 10px;font-size:11px;white-space:nowrap}
+.highlight-field .listing-row{margin-top:8px}
