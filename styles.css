@@ -325,3 +325,16 @@
 .vehicle-summary-line span{flex:0 0 88px;white-space:normal}
 .vehicle-summary-line b{flex:1;min-width:0;max-width:none}
 @media(max-width:680px){.vehicle-summary-card h3{font-size:15px}.vehicle-summary-price strong{font-size:17px}.vehicle-summary-line{gap:10px}.vehicle-summary-line span{flex-basis:82px}}
+/* Dark navy summary panel inspired by the reference, tuned for strong contrast. */
+.vehicle-summary-card{background:#20243c;color:#fff;border:1px solid #34394f;box-shadow:0 14px 30px #17192224}
+.vehicle-summary-card .eyebrow{color:#b8bdcd}
+.vehicle-summary-card h3{color:#fff}
+.vehicle-summary-photo{border-color:#ffffff2e;background:#ffffff12;color:#d2d6e1}
+.vehicle-summary-price{border-color:#ffffff29}
+.vehicle-summary-price span{color:#b8bdcd}
+.vehicle-summary-price strong{color:#ffad70}
+.vehicle-summary-section-title{color:#d1d5e0}
+.vehicle-summary-line{border-bottom-color:#ffffff29}
+.vehicle-summary-line span{color:#adb3c4}
+.vehicle-summary-line b{color:#fff}
+.vehicle-summary-empty{color:#b8bdcd}
